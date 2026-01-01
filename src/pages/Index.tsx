@@ -1,14 +1,31 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from 'react';
+import ChatList from '@/components/ChatList';
+import ChatWindow from '@/components/ChatWindow';
+import Sidebar from '@/components/Sidebar';
+import AuthScreen from '@/components/AuthScreen';
 
-const Index = () => {
+export default function Index() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [selectedChat, setSelectedChat] = useState<number | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  if (!isAuthenticated) {
+    return <AuthScreen onLogin={() => setIsAuthenticated(true)} />;
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4 color-black text-black">Добро пожаловать!</h1>
-        <p className="text-xl text-gray-600">тут будет отображаться ваш проект</p>
+    <div className="flex h-screen bg-background text-foreground overflow-hidden">
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      
+      <div className="flex flex-1 overflow-hidden">
+        <ChatList 
+          selectedChat={selectedChat} 
+          onSelectChat={setSelectedChat}
+          onOpenSidebar={() => setIsSidebarOpen(true)}
+        />
+        
+        <ChatWindow chatId={selectedChat} />
       </div>
     </div>
   );
-};
-
-export default Index;
+}
